@@ -1,0 +1,43 @@
+body {
+    background-color: #1C1C1C;
+    overflow-y: scroll;
+}
+
+h1 {
+    color: #F78A8C;
+    font-family: arial, sans-serif;
+    text-align: center;
+}
+
+p {
+    color: #FC6F68;
+    font-family: arial, sans-serif;
+    text-align: center;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 50%;
+}
+
+td, th {
+    color: #FC6F68;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #a76df7;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  table {
+    width: 100%;
+  }
+}
