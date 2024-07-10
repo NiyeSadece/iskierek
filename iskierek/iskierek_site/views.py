@@ -1,17 +1,21 @@
 from django.db.models import F
 from django.views.generic.list import ListView
-from rest_framework import status
+from rest_framework import status, generics, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
 from .models import DiscordUser
 from .serializers import DiscordUserSerializer
 
 
-class User(APIView):
-    def get(self, request, dcid, formate=None, **kwargs):
-        user = DiscordUser.objects.get(discord_id=dcid)
-        serializer = DiscordUserSerializer(user)
-        return Response(serializer.data)
+class GetUser(generics.GenericAPIView, mixins.RetrieveModelMixin):
+    queryset = DiscordUser.objects.all()
+    serializer_class = DiscordUserSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    lookup_field = 'discord_id'
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
 
 
 class UpdateExp(APIView):

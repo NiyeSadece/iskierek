@@ -16,12 +16,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from iskierek_site.views import User, UpdateExp, SubExp, UpdateLvl, RankingAPI, UserActive, UserInactive, Ranking
+from iskierek_site.views import GetUser, UpdateExp, SubExp, UpdateLvl, RankingAPI, UserActive, UserInactive, Ranking
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('ranking/', Ranking.as_view(), name='ranking'),
-    path('api/<int:dcid>/', User.as_view(), name='user'),
+    path('api/<int:discord_id>/', GetUser.as_view(), name='user'),
     path('api/exp/update/', UpdateExp.as_view(), name='exp_update'),
     path('api/exp/sub/', SubExp.as_view(), name='exp_sub'),
     path('api/lvl/update/', UpdateLvl.as_view(), name='lvl_update'),
