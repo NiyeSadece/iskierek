@@ -156,8 +156,22 @@ class Sport(models.Model):
         return f"{self.get_name_display()}, {self.get_special_display()}"
 
 
-class Major (models.Model):
-    NAME = [
+class Student (models.Model):
+    ELEMENT = [
+        ("O", "ogień"),
+        ("E", "elektryczność"),
+        ("P", "powietrze"),
+        ("Z", "ziemia"),
+        ("W", "woda"),
+        ]
+    LIVING = [
+        ("AP", "akademik Pyxis"),
+        ("AL", "akademik Lyra"),
+        ("AC", "akademik Crux"),
+        ("DM", "dom w Brightway"),
+        ("MM", "mieszkanie w Brightway"),
+        ]
+    MAJOR = [
         ("eko", "ekonomia"),
         ("log", "logistyka"),
         ("rif", "rachunkowość i finanse"),
@@ -226,49 +240,18 @@ class Major (models.Model):
         ("w3", "wykładowcze"),
         ]
 
-    name = models.CharField(max_length=3, choices=NAME)
-    faculty = models.CharField(max_length=3, choices=FACULTY)
-    year = models.CharField(max_length=2, choices=YEAR)
-
-    def get_name_display(self):
-        return dict(self.NAME).get(self.name)
-
-    def get_faculty_display(self):
-        return dict(self.FACULTY).get(self.faculty)
-
-    def get_year_display(self):
-        return dict(self.YEAR).get(self.year)
-
-    def __str__(self):
-        return f"{self.get_name_display()}, {self.get_year_display()}"
-
-class Student (models.Model):
-    ELEMENT = [
-        ("O", "ogień"),
-        ("E", "elektryczność"),
-        ("P", "powietrze"),
-        ("Z", "ziemia"),
-        ("W", "woda"),
-        ]
-    LIVING = [
-        ("AP", "akademik Pyxis"),
-        ("AL", "akademik Lyra"),
-        ("AC", "akademik Crux"),
-        ("DM", "dom w Brightway"),
-        ("MM", "mieszkanie w Brightway"),
-        ]
-
     user = models.ForeignKey(DiscordUser, on_delete=models.CASCADE)
     name = models.CharField(max_length=125)
     dob = models.DateField()
     element = models.CharField(max_length=1, choices=ELEMENT)
     spark = models.ForeignKey(Spark, on_delete=models.CASCADE)
-    major = models.ForeignKey(Major, on_delete=models.CASCADE, blank=True)
     extracurricular = models.ForeignKey(Extracurricular, on_delete=models.CASCADE, blank=True)
     club = models.ForeignKey(Club, on_delete=models.CASCADE, blank=True)
     sport = models.ForeignKey(Sport, on_delete=models.CASCADE, blank=True)
     living = models.CharField(max_length=2, choices=LIVING)
-
+    major = models.CharField(max_length=3, choices=MAJOR)
+    faculty = models.CharField(max_length=3, choices=FACULTY)
+    year = models.CharField(max_length=2, choices=YEAR)
     def __str__(self):
         return self.name
 

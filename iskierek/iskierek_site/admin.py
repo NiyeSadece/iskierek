@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DiscordUser, Spark, Club, Sport, Major, Extracurricular, Student
+from .models import DiscordUser, Spark, Club, Sport, Extracurricular, Student
 
 
 @admin.register(DiscordUser)
@@ -47,22 +47,6 @@ class SportAdmin(admin.ModelAdmin):
     def get_special_display(self, obj):
         return obj.get_special_display()
     get_special_display.short_description = 'Special'
-
-@admin.register(Major)
-class MajorAdmin(admin.ModelAdmin):
-    list_display = ('get_name_display', 'get_faculty_display', 'get_year_display')
-
-    def get_name_display(self, obj):
-        return obj.get_name_display()
-    get_name_display.short_description = 'Name'
-
-    def get_faculty_display(self, obj):
-        return obj.get_faculty_display()
-    get_faculty_display.short_description = 'Faculty'
-
-    def get_year_display(self, obj):
-        return obj.get_year_display()
-    get_year_display.short_description = 'Year'
 
 @admin.register(Extracurricular)
 class ExtracurricularAdmin(admin.ModelAdmin):
