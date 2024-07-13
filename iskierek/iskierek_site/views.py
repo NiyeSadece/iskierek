@@ -33,7 +33,7 @@ class UpdateExp(APIView):
                 serializer.exp = F('exp') + exp
 
                 if serializer.is_active == False:
-                    serializer.is_active == True
+                    serializer.is_active = True
 
             serializer.save()
             return Response(None, status=status.HTTP_201_CREATED)
@@ -125,7 +125,5 @@ class Ranking(ListView):
 
     def get_queryset(self):
         return super().get_queryset().filter(is_active=True).order_by("-exp")
-
-from django.shortcuts import render
 
 # Create your views here.
