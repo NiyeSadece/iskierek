@@ -74,6 +74,14 @@ def get_user(dsid):
     response = requests.get(f"{DOMAIN}api/{dsid}/")
     return response.json()
 
+def get_student(student):
+    response = requests.get(f"{DOMAIN}api/s/{student}/")
+    return response.json()
+
+def get_prof(prof):
+    response = requests.get(f"{DOMAIN}api/p/{prof}/")
+    return response.json()
+
 def get_ranking():
     response = requests.get(f"{DOMAIN}api/ranking/")
     return response.json()
@@ -204,6 +212,111 @@ async def weekly_message():
         else:
             print("Channel not found.")
 
+
+@client.hybrid_command(
+    name="id",
+    with_app_command=True,
+    description="Sprawdź wizytówkę postaci",
+    pass_context=True,
+    help="Sprawdź wizytówkę postaci",
+    aliases=["Id", "ID", "iD"])
+@app_commands.guilds(discord.Object(id=GUILD))
+async def id(ctx: commands.Context, name: str):
+    await ctx.defer()
+    try:
+        name = name.title()
+        student = get_student(name)
+        prof = get_prof(name)
+        if student and student.get('name'):
+            person = student
+        elif prof and prof.get('name'):
+            person = prof
+        else:
+            await ctx.send("Postać nie została znaleziona.")
+            return
+        embed = discord.Embed(
+                title=f"{person['name']} {person['last_name']}",
+                description="Wizytówka postaci",
+                colour=0xF78A8C,
+                timestamp=datetime.now()
+            )
+        embed.add_field(name="Urodziny", value=person['dob'])
+        embed.add_field(name="Wiek", value=person['age'])
+        embed.add_field(name="Iskra", value=person['spark_display']['name_display'])
+        embed.add_field(name="Żywioł", value=person['element_display'])
+        embed.add_field(name="Zamieszkanie", value=person['living_display'])
+
+        if person == student:
+            if student['major2_display']:
+                embed.add_field(name="Kierunki", value=f"{student['major_display']}, {student['year_display']},\nWydział {student['faculty_display']}\n{student['major2_display']}, {student['year2_display']},\nWydział {student['faculty2_display']}")
+            else:
+                embed.add_field(name="Kierunek", value=f"{student['major_display']}, {student['year_display']},\nWydział {student['faculty_display']}")
+
+            sport = student['sport_display']
+            if sport:
+                sport_value = sport['name_display']
+                if sport['special_display']:
+                    sport_value += f", {sport['special_display']}"
+            else:
+                sport_value = "brak"
+            embed.add_field(name="Sport", value=sport_value)
+
+            extracurricular = student['extracurricular_display']
+            if extracurricular:
+                extra_value = extracurricular['name_display']
+                if extracurricular['special_display']:
+                    extra_value += f", {extracurricular['special_display']}"
+            else:
+                extra_value = "brak"
+            embed.add_field(name="Zajęcia dodatkowe", value=extra_value)
+
+            club = student['club_display']
+            if club:
+                club_value = club['name_display']
+                if club['special_display']:
+                    club_value += f", {club['special_display']}"
+            else:
+                club_value = "brak"
+            embed.add_field(name="Klub", value=club_value)
+
+        if person == prof:
+            if prof['major2_display']:
+                embed.add_field(name="Naucza", value=f"{prof['major_display']}, od {prof['how_long']} ({prof['teaching_duration_1']})\nWydział {prof['faculty_display']}\n{prof['major2_display']}, od {prof['how_long2']} ({prof['teaching_duration_2']})\nWydział {prof['faculty2_display']}")
+            else:
+                embed.add_field(name="Naucza", value=f"{prof['major_display']}, od {prof['how_long']} ({prof['teaching_duration_1']})\nWydział {prof['faculty_display']}")
+
+            sport = prof['sport_display']
+            extracurricular = prof['extracurricular_display']
+            club = prof['club_display']
+            dorm = prof['dorm_display']
+            if sport:
+                sport_value = f"{sport['name_display']}, {sport['special_display']}"
+                embed.add_field(name="Dodatkowe", value=sport_value)
+            elif extracurricular:
+                extra_value = f"{extracurricular['name_display']}, {extracurricular['special_display']}"
+                embed.add_field(name="Dodatkowe", value=extra_value)
+            elif club:
+                club_value = f"{club['name_display']}, {club['special_display']}"
+                embed.add_field(name="Dodatkowe", value=club_value)
+            elif dorm:
+                dorm_value = f"{prof['dorm_display']}, {prof['_dorm_special_display']}"
+                embed.add_field(name="Dodatkowe", value=dorm_value)
+            else:
+                embed.add_field(name="Dodatkowe", value="brak")
+
+        if ctx.guild.icon:
+                icon_url = str(ctx.guild.icon.url)
+                embed.set_author(name="Brightway | Avaritis University", icon_url=icon_url)
+
+        embed.set_thumbnail(url=f"{person['photo']}")
+
+        await ctx.send(embed=embed)
+
+    except commands.MissingRequiredArgument:
+        await ctx.send("Musisz podać imię postaci.")
+    except discord.HTTPException as e:
+        await ctx.send(f"An error occurred: {e}")
+
 # showing level
 @client.hybrid_command(
     name="lvl",
@@ -224,8 +337,7 @@ async def lvl(ctx: commands.Context, member: discord.Member = None):
         else:
             # Create the embed
             embed = discord.Embed(
-                title='Creativity check!',
-                description=f"{member.display_name}",
+                title=f"{member.display_name}",
                 colour=0xF78A8C,
                 timestamp=datetime.now()
             )

@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from iskierek_site.views import GetUser, UpdateExp, SubExp, UpdateLvl, RankingAPI, UserActive, UserInactive, Ranking
+from iskierek_site.views import GetUser, UpdateExp, SubExp, UpdateLvl, RankingAPI, UserActive, UserInactive, Ranking, GetStudent, GetProfessor
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,4 +28,6 @@ urlpatterns = [
     path('api/ranking/', RankingAPI.as_view(), name='ranking_api'),
     path('api/user/active/', UserActive.as_view(), name='active_user'),
     path('api/user/inactive/', UserInactive.as_view(), name='inactive_user'),
+    path('api/s/<str:name>/', GetStudent.as_view(), name='student'),
+    path('api/p/<str:name>/', GetProfessor.as_view(), name='professor'),
 ]

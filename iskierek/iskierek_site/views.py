@@ -4,8 +4,8 @@ from rest_framework import status, generics, mixins
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import DjangoModelPermissionsOrAnonReadOnly
-from .models import DiscordUser
-from .serializers import DiscordUserSerializer
+from .models import DiscordUser, Student, Professor
+from .serializers import DiscordUserSerializer, StudentSerializer, ProfessorSerializer
 
 
 class GetUser(generics.GenericAPIView, mixins.RetrieveModelMixin):
@@ -13,6 +13,25 @@ class GetUser(generics.GenericAPIView, mixins.RetrieveModelMixin):
     serializer_class = DiscordUserSerializer
     permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
     lookup_field = 'discord_id'
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+
+class GetStudent(generics.GenericAPIView, mixins.RetrieveModelMixin):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    lookup_field = 'name'
+
+    def get(self, request, *args, **kwargs):
+        return self.retrieve(request, *args, **kwargs)
+
+class GetProfessor(generics.GenericAPIView, mixins.RetrieveModelMixin):
+    queryset = Professor.objects.all()
+    serializer_class = ProfessorSerializer
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    lookup_field = 'name'
 
     def get(self, request, *args, **kwargs):
         return self.retrieve(request, *args, **kwargs)
@@ -126,4 +145,3 @@ class Ranking(ListView):
     def get_queryset(self):
         return super().get_queryset().filter(is_active=True).order_by("-exp")
 
-# Create your views here.

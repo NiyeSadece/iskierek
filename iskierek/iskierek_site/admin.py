@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import DiscordUser, Spark, Club, Sport, Extracurricular, Student
+from .models import DiscordUser, Spark, Club, Sport, Extracurricular, Student, Professor
 
 
 @admin.register(DiscordUser)
@@ -62,4 +62,8 @@ class ExtracurricularAdmin(admin.ModelAdmin):
 
 @admin.register(Student)
 class StudentAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Professor)
+class ProfessorAdmin(admin.ModelAdmin):
     pass
